@@ -23,7 +23,7 @@ public class CityArrayAdapter extends ArrayAdapter<City> {
         View view;
         if(convertView == null){
             view = LayoutInflater.from(getContext()).inflate(R.layout.content, parent, false);
-        }else{
+        } else {
             view = convertView;
         }
 

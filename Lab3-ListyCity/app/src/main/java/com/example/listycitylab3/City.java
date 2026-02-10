@@ -1,6 +1,8 @@
 package com.example.listycitylab3;
 
-public class City {
+import java.io.Serializable;
+
+public class City implements Comparable<City>, Serializable {
     private String name;
     private String province;
 
@@ -23,5 +25,10 @@ public class City {
 
     public void setProvince(String province) {
         this.province = province;
+    }
+
+    @Override
+    public int compareTo(City city) {
+        return this.name.compareTo(city.getName());
     }
 }

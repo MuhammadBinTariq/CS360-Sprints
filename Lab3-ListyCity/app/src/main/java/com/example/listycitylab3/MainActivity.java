@@ -3,26 +3,21 @@ package com.example.listycitylab3;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity implements
-        AddCityFragment.AddCityDialogListener {
+        AddCityFragment.FragmentInteractionListener {
 
     private ArrayList<City> dataList;
     private ListView cityList;
     private CityArrayAdapter cityAdapter;
-
-    @Override
-    public void addCity(City city) {
-        cityAdapter.add(city);
-        cityAdapter.notifyDataSetChanged();
-    }
+    private int selectedPosition = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,9 +40,37 @@ public class MainActivity extends AppCompatActivity implements
         cityAdapter = new CityArrayAdapter(this, dataList);
         cityList.setAdapter(cityAdapter);
 
+        // Handling the Add option
         FloatingActionButton fab = findViewById(R.id.button_add_city);
-        fab.setOnClickListener(v -> {
-            new AddCityFragment().show(getSupportFragmentManager(), "Add City");
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectedPosition = -1;
+                new AddCityFragment().show(getSupportFragmentManager(), "add_city");
+            }
         });
+
+        // Handling the Edit option
+        cityList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                selectedPosition = position;
+                City selectedCity = dataList.get(position);
+
+                AddCityFragment.newInstance(selectedCity).show(getSupportFragmentManager(), "edit_city");
+            }
+        });
+    }
+
+    @Override
+    public void AddEditCity(City city) {
+        if (selectedPosition == -1) {
+            cityAdapter.add(city);
+        } else {
+            City cityToUpdate = dataList.get(selectedPosition);
+            cityToUpdate.setName(city.getName());
+            cityToUpdate.setProvince(city.getProvince());
+            cityAdapter.notifyDataSetChanged();
+        }
     }
 }
