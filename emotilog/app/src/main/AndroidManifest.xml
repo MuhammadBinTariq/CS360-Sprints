@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    AndroidManifest.xml for EmotiLog application
+
+    Defines:
+    - Application metadata
+    - All activities and their configurations
+    - Permissions
+    - Launch activity
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.emotilog">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Emotilog">
+
+        <!-- Main Activity - Launch screen with emotion buttons -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Emotilog">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Logs Activity - Displays all emotion logs -->
+        <activity
+            android:name=".LogsActivity"
+            android:exported="false"
+            android:label="Emotion Logs"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+
+        <!-- Summary Activity - Displays emotion statistics -->
+        <activity
+            android:name=".SummaryActivity"
+            android:exported="false"
+            android:label="Daily Summary"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+
+    </application>
+
+</manifest>

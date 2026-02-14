@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Layout for MainActivity - Main emotion logging screen
+
+    Design Rationale:
+    - Grid layout of emotion buttons for easy access
+    - ScrollView ensures all buttons are accessible on smaller screens
+    - FloatingActionButtons provide quick navigation to logs and summary
+    - Color-coded buttons match emotion types
+    - Large touch targets for ease of use
+-->
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Header -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="EmotiLog"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="How are you feeling?"
+                android:textSize="18sp"
+                android:gravity="center"
+                android:paddingBottom="16dp"/>
+
+            <!-- Log count display -->
+            <TextView
+                android:id="@+id/tv_log_count"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Total Logs: 0"
+                android:textSize="16sp"
+                android:gravity="center"
+                android:paddingBottom="24dp"/>
+
+            <!-- Emotion buttons grid -->
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="2"
+                android:rowCount="5"
+                android:alignmentMode="alignMargins"
+                android:columnOrderPreserved="false"
+                android:useDefaultMargins="true">
+
+                <!-- Row 1 -->
+                <Button
+                    android:id="@+id/btn_happy"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:text="😊 Happy"
+                    android:textSize="18sp"
+                    android:padding="20dp"
+                    android:layout_margin="4dp"/>
+
+                <Button
+                    android:id="@+id/btn_sad"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:text="😢 Sad"
+                    android:textSize="18sp"
+                    android:padding="20dp"
+                    android:layout_margin="4dp"/>
+
+                <!-- Row 2 -->
+                <Button
+                    android:id="@+id/btn_grateful"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:text="🙏 Grateful"
+                    android:textSize="18sp"
+                    android:padding="20dp"
+                    android:layout_margin="4dp"/>
+
+                <Button
+                    android:id="@+id/btn_angry"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:text="😠 Angry"
+                    android:textSize="18sp"
+                    android:padding="20dp"
+                    android:layout_margin="4dp"/>
+
+                <!-- Row 3 -->
+                <Button
+                    android:id="@+id/btn_excited"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:text="🎉 Excited"
+                    android:textSize="18sp"
+                    android:padding="20dp"
+                    android:layout_margin="4dp"/>
+
+                <Button
+                    android:id="@+id/btn_anxious"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:text="😰 Anxious"
+                    android:textSize="18sp"
+                    android:padding="20dp"
+                    android:layout_margin="4dp"/>
+
+                <!-- Row 4 -->
+                <Button
+                    android:id="@+id/btn_calm"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:text="😌 Calm"
+                    android:textSize="18sp"
+                    android:padding="20dp"
+                    android:layout_margin="4dp"/>
+
+                <Button
+                    android:id="@+id/btn_tired"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:text="😴 Tired"
+                    android:textSize="18sp"
+                    android:padding="20dp"
+                    android:layout_margin="4dp"/>
+
+                <!-- Row 5 -->
+                <Button
+                    android:id="@+id/btn_surprised"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:text="😲 Surprised"
+                    android:textSize="18sp"
+                    android:padding="20dp"
+                    android:layout_margin="4dp"/>
+
+            </GridLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <!-- Floating Action Button for viewing logs -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_view_logs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:layout_marginBottom="80dp"
+        android:contentDescription="View Logs"
+        app:srcCompat="@android:drawable/ic_menu_view"
+        app:layout_anchorGravity="bottom|end"/>
+
+    <!-- Floating Action Button for viewing summary -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_view_summary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="16dp"
+        android:contentDescription="View Summary"
+        app:srcCompat="@android:drawable/ic_menu_sort_by_size"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

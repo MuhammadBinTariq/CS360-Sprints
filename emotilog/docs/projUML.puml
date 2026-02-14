@@ -1,0 +1,158 @@
+@startuml
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+package "com.example.emotilog" {
+
+    ' --- Enums ---
+    enum Emotion {
+        HAPPY
+        SAD
+        GRATEFUL
+        ANGRY
+        EXCITED
+        ANXIOUS
+        CALM
+        TIRED
+        SURPRISED
+        - String displayName
+        - String emoji
+        - String colorCode
+        + String getFormattedDisplay()
+        + String getColorCode()
+    }
+    note left of Emotion
+        <b>Type Definition</b>
+        Defines constant emotion types
+        with UI properties (emoji, color).
+        Implements Serializable.
+    end note
+
+    ' --- Models ---
+    class EmotionLog {
+        - Date timestamp
+        - long id
+        + EmotionLog(Emotion emotion)
+        + Emotion getEmotion()
+        + String getFormattedTimestamp()
+        + int compareTo(EmotionLog other)
+    }
+    note bottom of EmotionLog
+        <b>Data Model</b>
+        Represents a single event.
+        Implements Comparable for
+        chronological sorting.
+    end note
+
+    class "SummaryActivity.EmotionSummaryItem" as EmotionSummaryItem {
+        - int count
+        + EmotionSummaryItem(Emotion emotion, int count)
+        + float getPercentage(int total)
+    }
+    note bottom of EmotionSummaryItem
+        <b>Data Transfer Object</b>
+        Helper class used specifically
+        for calculating and displaying
+        statistics in the Summary view.
+    end note
+
+    ' --- Managers (Singleton) ---
+    class EmotionLogManager {
+        - {static} EmotionLogManager instance
+        - List<EmotionLog> emotionLogs
+        - EmotionLogManager(Context context)
+        + {static} getInstance(Context context)
+        + void addLog(EmotionLog log)
+        + List<EmotionLog> getAllLogs()
+        + List<EmotionLog> getLogsForDate(Date date)
+        + Map<Emotion, Integer> getSummaryForDate(Date date)
+        + void clearAllLogs()
+    }
+    note right of EmotionLogManager
+        <b>Singleton / Repository</b>
+        Central source of truth.
+        Manages the in-memory list
+        of logs. Thread-safe instance
+        creation.
+    end note
+
+    ' --- Activities ---
+    class MainActivity {
+        - Button[] emotionButtons
+        # void onCreate(Bundle savedInstanceState)
+        - void logEmotion(Emotion emotion)
+        - void navigateToLogs()
+        - void navigateToSummary()
+    }
+    note top of MainActivity
+        <b>Entry Point</b>
+        Handles user interaction for
+        creating new logs.
+    end note
+
+    class LogsActivity {
+        - ListView lvLogs
+        - TextView tvEmptyState
+        # void onCreate(Bundle savedInstanceState)
+        - void loadLogs()
+    }
+    note top of LogsActivity
+        <b>History View</b>
+        Displays the chronological
+        list of all logged emotions.
+    end note
+
+    class SummaryActivity {
+        - Date selectedDate
+        - ListView lvSummary
+        # void onCreate(Bundle savedInstanceState)
+        - void updateSummary()
+        - void showDatePicker()
+    }
+    note top of SummaryActivity
+        <b>Statistics View</b>
+        Calculates and displays
+        breakdowns by date.
+    end note
+
+    ' --- Adapters ---
+    class EmotionLogAdapter {
+        + View getView(int position, View convertView, ViewGroup parent)
+        + void updateLogs(List<EmotionLog> newLogs)
+    }
+
+    class EmotionSummaryAdapter {
+        - int totalCount
+        + View getView(int position, View convertView, ViewGroup parent)
+    }
+    
+    ' --- Relationships ---
+    
+    ' Activity dependencies
+    MainActivity ..> EmotionLogManager : uses
+    LogsActivity ..> EmotionLogManager : uses
+    SummaryActivity ..> EmotionLogManager : uses
+    
+    ' Navigation
+    MainActivity ..> LogsActivity : navigates to
+    MainActivity ..> SummaryActivity : navigates to
+
+    ' Adapter usage
+    LogsActivity --> EmotionLogAdapter : creates
+    SummaryActivity --> EmotionSummaryAdapter : creates
+
+    ' Data associations
+    EmotionLogManager "1" *-- "*" EmotionLog : manages >
+    EmotionLog "1" --> "1" Emotion : has >
+    EmotionSummaryItem "1" --> "1" Emotion : has >
+    
+    ' Adapter data binding
+    EmotionLogAdapter --> EmotionLog : binds >
+    EmotionSummaryAdapter --> EmotionSummaryItem : binds >
+    
+    ' Inner class relationship
+    SummaryActivity +-- EmotionSummaryItem
+}
+
+@enduml

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    String resources for EmotiLog application
+
+    Design Rationale:
+    - Centralized string management for easy localization
+    - Separates UI text from code
+-->
+<resources>
+    <string name="app_name">27100017-EmotiLog</string>
+    <string name="how_feeling">How are you feeling?</string>
+    <string name="total_logs">Total Logs: %1$d</string>
+    <string name="no_logs">No emotion logs yet.\nGo back and start logging!</string>
+    <string name="emotion_logged">%1$s logged!</string>
+    <string name="select_date">Select Date</string>
+    <string name="daily_summary">Daily Summary</string>
+    <string name="emotion_breakdown">Emotion Breakdown</string>
+    <string name="view_logs">View Logs</string>
+    <string name="view_summary">View Summary</string>
+    <string name="no_logs_date">No logs for this date</string>
+</resources>
