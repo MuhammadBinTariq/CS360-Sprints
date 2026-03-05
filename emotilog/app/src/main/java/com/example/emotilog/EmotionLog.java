@@ -7,18 +7,14 @@ import java.util.Locale;
 
 /**
  * EmotionLog class represents a single emotion logging event.
- *
  * Design Rationale:
  * - Encapsulates all data for a single emotion log entry
  * - Uses Date object for timestamp to allow for easy formatting and comparison
  * - Implements Serializable for data persistence and transfer
- * - Follows JavaBean conventions with getters and setters
  * - Immutable ID using timestamp ensures unique identification
  *
- * Outstanding Issues: None
- *
- * @author Your Name
- * @version 1.0
+ * @author Muhammad Bin Tariq
+ * @version 0.2
  */
 public class EmotionLog implements Serializable, Comparable<EmotionLog> {
     private static final long serialVersionUID = 1L;
@@ -27,10 +23,6 @@ public class EmotionLog implements Serializable, Comparable<EmotionLog> {
     private Date timestamp;
     private long id; // Using timestamp as unique ID
 
-    /**
-     * Default constructor
-     * Initializes with current timestamp
-     */
     public EmotionLog() {
         this.timestamp = new Date();
         this.id = timestamp.getTime();
@@ -59,48 +51,23 @@ public class EmotionLog implements Serializable, Comparable<EmotionLog> {
         this.id = timestamp.getTime();
     }
 
-    /**
-     * Get the emotion of this log entry
-     *
-     * @return The emotion
-     */
     public Emotion getEmotion() {
         return emotion;
     }
 
-    /**
-     * Set the emotion for this log entry
-     *
-     * @param emotion The emotion to set
-     */
     public void setEmotion(Emotion emotion) {
         this.emotion = emotion;
     }
 
-    /**
-     * Get the timestamp of this log entry
-     *
-     * @return The timestamp
-     */
     public Date getTimestamp() {
         return timestamp;
     }
 
-    /**
-     * Set the timestamp for this log entry
-     *
-     * @param timestamp The timestamp to set
-     */
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
         this.id = timestamp.getTime();
     }
 
-    /**
-     * Get the unique ID of this log entry
-     *
-     * @return The unique ID
-     */
     public long getId() {
         return id;
     }

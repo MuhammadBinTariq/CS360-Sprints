@@ -15,30 +15,20 @@ import java.util.List;
 
 /**
  * EmotionLogAdapter is a custom adapter for displaying EmotionLog objects in a ListView.
- *
  * Design Rationale:
  * - Extends ArrayAdapter for easy integration with ListView
  * - Follows the ViewHolder pattern for efficient view recycling
- * - Custom layout allows for rich display of log information
  * - Color-codes each log entry based on emotion type
  * - Separates date and time for better readability
  *
- * Outstanding Issues: None
- *
- * @author Your Name
- * @version 1.0
+ * @author Muhammad Bin Tariq
+ * @version 0.2
  */
 public class EmotionLogAdapter extends ArrayAdapter<EmotionLog> {
 
     private Context context;
     private List<EmotionLog> logs;
 
-    /**
-     * Constructor for EmotionLogAdapter
-     *
-     * @param context The current context
-     * @param logs List of emotion logs to display
-     */
     public EmotionLogAdapter(Context context, List<EmotionLog> logs) {
         super(context, 0, logs);
         this.context = context;

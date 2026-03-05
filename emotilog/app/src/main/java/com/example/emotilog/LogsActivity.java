@@ -7,24 +7,20 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import java.util.List;
 
 /**
  * LogsActivity displays all emotion logs in chronological order.
- *
  * Design Rationale:
  * - Separate activity from MainActivity for clear separation of concerns
  * - Uses ListView with custom adapter for efficient display of many logs
  * - Shows logs in reverse chronological order (most recent first)
  * - Provides empty state message when no logs exist
  * - Includes back navigation and optional clear all functionality
- *
  * Outstanding Issues: None
  *
- * @author Your Name
- * @version 1.0
+ * @author Muhammad Bin Tariq
+ * @version 0.2
  */
 public class LogsActivity extends AppCompatActivity {
 

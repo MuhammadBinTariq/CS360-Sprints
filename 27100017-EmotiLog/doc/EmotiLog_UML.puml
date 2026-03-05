@@ -1,0 +1,329 @@
+@startuml EmotiLog
+
+title EmotiLog — UML Class Diagram\nSession-Based Emotion Logging App
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam nodesep 60
+skinparam ranksep 80
+
+skinparam class {
+    BackgroundColor<<enum>>       #E8D5F5
+    BackgroundColor<<singleton>>  #D5E8F5
+    BackgroundColor<<model>>      #D5EBD5
+    BackgroundColor<<controller>> #FFF5CC
+    BackgroundColor<<adapter>>    #FFE5CC
+    BackgroundColor<<inner>>      #F0F0F0
+    BorderColor                   #555555
+    FontSize                      12
+}
+skinparam arrow {
+    Color  #444444
+    FontSize 10
+}
+
+' ─────────────────────────────────────────────
+' ENUM
+' ─────────────────────────────────────────────
+enum Emotion <<enum>> {
+    ' — constants —
+    + HAPPY
+    + SAD
+    + GRATEFUL
+    + ANGRY
+    + EXCITED
+    + ANXIOUS
+    + CALM
+    + TIRED
+    ' — fields —
+    - displayName   : String
+    - emoji         : String
+    - colorCode     : String
+    - backgroundTint: String
+    ' — methods —
+    + getDisplayName()    : String
+    + getEmoji()          : String
+    + getColorCode()      : String
+    + getBackgroundTint() : String
+    + getFormattedDisplay(): String
+}
+
+note right of Emotion
+  <b>Responsibility</b>
+  Defines the fixed set of loggable
+  emotions. Each constant bundles its
+  display name, emoji, button colour
+  and pastel background tint.
+
+  <b>Pattern:</b> Type-safe enum
+  <b>Implements:</b> Serializable
+end note
+
+' ─────────────────────────────────────────────
+' MODEL LAYER
+' ─────────────────────────────────────────────
+class EmotionLog <<model>> {
+    - {static} serialVersionUID : long
+    - emotion  : Emotion
+    - timestamp: Date
+    - id       : long
+    + EmotionLog()
+    + EmotionLog(emotion: Emotion)
+    + EmotionLog(emotion: Emotion, timestamp: Date)
+    + getEmotion()            : Emotion
+    + setEmotion(Emotion)     : void
+    + getTimestamp()          : Date
+    + setTimestamp(Date)      : void
+    + getId()                 : long
+    + getFormattedTimestamp() : String
+    + getFormattedTime()      : String
+    + getFormattedDate()      : String
+    + compareTo(EmotionLog)   : int
+    + toString()              : String
+}
+
+note right of EmotionLog
+  <b>Responsibility</b>
+  Represents a single logging event:
+  one emotion + the exact timestamp
+  it was recorded.
+
+  <b>Implements:</b> Serializable,
+  Comparable<EmotionLog>
+  (sorts newest-first)
+end note
+
+class EmotionLogManager <<singleton>> {
+    - {static} instance : EmotionLogManager
+    - emotionLogs       : List<EmotionLog>
+    - EmotionLogManager(context: Context)
+    + {static} getInstance(Context) : EmotionLogManager
+    + addLog(EmotionLog)            : void
+    + addLog(Emotion)               : void
+    + getAllLogs()                  : List<EmotionLog>
+    + getLogsForDate(Date)          : List<EmotionLog>
+    + getSummaryForDate(Date)       : Map<Emotion,Integer>
+    + getTotalLogsForDate(Date)     : int
+    + getUniqueDates()              : List<String>
+    + deleteLog(EmotionLog)         : boolean
+    + clearAllLogs()                : void
+    + getLogCount()                 : int
+}
+
+note right of EmotionLogManager
+  <b>Responsibility</b>
+  Single source of truth for all logs.
+  Owns the in-memory ArrayList and
+  exposes CRUD + query operations.
+
+  <b>Pattern:</b> Singleton
+  <b>Storage:</b> Session-only (RAM).
+  Data resets when the app closes.
+end note
+
+' ─────────────────────────────────────────────
+' CONTROLLER LAYER  (Activities)
+' ─────────────────────────────────────────────
+class MainActivity <<controller>> {
+    - {static} PRESS_DOWN_MS   : int
+    - {static} PRESS_UP_MS     : int
+    - {static} BG_FADE_MS      : int
+    - {static} COLOR_DEFAULT_BG: int
+    - logManager    : EmotionLogManager
+    - rootLayout    : View
+    - tvLogCount    : TextView
+    - emotionButtons: Button[]
+    - currentBgColor: int
+    # onCreate(Bundle)           : void
+    # onResume()                 : void
+    - initializeViews()          : void
+    - setupEmotionButtons()      : void
+    - setupNavigationButtons()   : void
+    - animateButtonPress(Button) : void
+    - animateBackground(Emotion) : void
+    - buildRoundedDrawable(Emotion): GradientDrawable
+    - logEmotion(Emotion)        : void
+    - updateLogCount()           : void
+    - navigateToLogs()           : void
+    - navigateToSummary()        : void
+}
+
+note right of MainActivity
+  <b>Responsibility</b>
+  Primary screen. Hosts the 8 emotion
+  buttons and drives two simultaneous
+  effects on each press:
+  1. Scale-down/up button animation
+  2. ArgbEvaluator background cross-fade
+  Also shows running total log count.
+end note
+
+class LogsActivity <<controller>> {
+    - logManager  : EmotionLogManager
+    - lvLogs      : ListView
+    - tvEmptyState: TextView
+    - adapter     : EmotionLogAdapter
+    # onCreate(Bundle) : void
+    # onResume()       : void
+    - initializeViews(): void
+    - loadLogs()       : void
+    - refreshLogs()    : void
+    + onSupportNavigateUp(): boolean
+}
+
+note right of LogsActivity
+  <b>Responsibility</b>
+  Displays the full session log in
+  reverse-chronological order.
+  Shows an empty-state message when
+  nothing has been logged yet.
+end note
+
+class SummaryActivity <<controller>> {
+    - logManager    : EmotionLogManager
+    - tvSelectedDate: TextView
+    - tvTotalCount  : TextView
+    - lvSummary     : ListView
+    - btnSelectDate : Button
+    - selectedDate  : Date
+    - adapter       : EmotionSummaryAdapter
+    # onCreate(Bundle) : void
+    # onResume()       : void
+    - initializeViews(): void
+    - showDatePicker() : void
+    - updateSummary()  : void
+    + onSupportNavigateUp(): boolean
+}
+
+note right of SummaryActivity
+  <b>Responsibility</b>
+  Shows per-emotion counts and
+  percentages for a chosen date.
+  Defaults to today; a DatePickerDialog
+  lets the user browse other sessions.
+end note
+
+class EmotionSummaryItem <<inner>> {
+    - emotion: Emotion
+    - count  : int
+    + EmotionSummaryItem(Emotion, int)
+    + getEmotion()            : Emotion
+    + getCount()              : int
+    + getPercentage(int total): float
+}
+
+note bottom of EmotionSummaryItem
+  <b>Responsibility</b>
+  Lightweight data holder pairing an
+  Emotion with its log count for one
+  day. Used only by SummaryActivity
+  and EmotionSummaryAdapter.
+end note
+
+' ─────────────────────────────────────────────
+' VIEW LAYER  (Adapters)
+' ─────────────────────────────────────────────
+class EmotionLogAdapter <<adapter>> {
+    - context: Context
+    - logs   : List<EmotionLog>
+    + EmotionLogAdapter(Context, List<EmotionLog>)
+    + getView(int, View, ViewGroup): View
+    + updateLogs(List<EmotionLog>) : void
+}
+
+class EmotionLogAdapter_ViewHolder <<inner>> {
+    ~ tvEmotion     : TextView
+    ~ tvDate        : TextView
+    ~ tvTime        : TextView
+    ~ colorIndicator: View
+}
+
+note right of EmotionLogAdapter
+  <b>Responsibility</b>
+  Inflates item_emotion_log.xml for
+  each entry in LogsActivity's ListView.
+  Uses ViewHolder to cache references
+  and avoid repeated findViewById calls.
+end note
+
+class EmotionSummaryAdapter <<adapter>> {
+    - context   : Context
+    - items     : List<EmotionSummaryItem>
+    - totalCount: int
+    + EmotionSummaryAdapter(Context, List, int)
+    + getView(int, View, ViewGroup): View
+}
+
+class EmotionSummaryAdapter_ViewHolder <<inner>> {
+    ~ tvEmotion     : TextView
+    ~ tvCount       : TextView
+    ~ tvPercentage  : TextView
+    ~ progressBar   : ProgressBar
+    ~ colorIndicator: View
+}
+
+note right of EmotionSummaryAdapter
+  <b>Responsibility</b>
+  Inflates item_emotion_summary.xml
+  for SummaryActivity's ListView.
+  Renders per-emotion count, percentage
+  and a color-tinted ProgressBar.
+end note
+
+' ─────────────────────────────────────────────
+' ANDROID FRAMEWORK  (abbreviated)
+' ─────────────────────────────────────────────
+abstract class AppCompatActivity {
+    # onCreate(Bundle): void
+    # onResume()      : void
+}
+abstract class "ArrayAdapter<T>" as ArrayAdapter {
+    + getView(int, View, ViewGroup): View
+}
+interface Serializable <<interface>>
+interface "Comparable<EmotionLog>" as Comparable <<interface>>
+
+' ─────────────────────────────────────────────
+' RELATIONSHIPS
+' ─────────────────────────────────────────────
+
+' --- Inheritance ---
+MainActivity    --|> AppCompatActivity
+LogsActivity    --|> AppCompatActivity
+SummaryActivity --|> AppCompatActivity
+EmotionLogAdapter     --|> ArrayAdapter
+EmotionSummaryAdapter --|> ArrayAdapter
+
+' --- Implementation ---
+Emotion    ..|> Serializable
+EmotionLog ..|> Serializable
+EmotionLog ..|> Comparable
+
+' --- Composition: EmotionLog owns one Emotion ---
+EmotionLog "1" *-- "1" Emotion : contains >
+
+' --- Aggregation: Manager holds the log collection ---
+EmotionLogManager "1" o-- "0..*" EmotionLog : manages >
+
+' --- Inner-class containment ---
+SummaryActivity      +-- EmotionSummaryItem
+EmotionLogAdapter    +-- EmotionLogAdapter_ViewHolder
+EmotionSummaryAdapter +-- EmotionSummaryAdapter_ViewHolder
+
+' --- Dependencies: Activities → Manager ---
+MainActivity    ..> EmotionLogManager : uses
+LogsActivity    ..> EmotionLogManager : uses
+SummaryActivity ..> EmotionLogManager : uses
+
+' --- Dependencies: Activities → Adapters ---
+LogsActivity    ..> EmotionLogAdapter     : creates
+SummaryActivity ..> EmotionSummaryAdapter : creates
+
+' --- Dependencies: Adapters → data types ---
+EmotionLogAdapter     ..> EmotionLog         : renders
+EmotionSummaryAdapter ..> EmotionSummaryItem : renders
+
+' --- Dependencies: MainActivity → Emotion (animation colours) ---
+MainActivity ..> Emotion : reads tints
+
+@enduml

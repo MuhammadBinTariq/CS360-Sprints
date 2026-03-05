@@ -17,7 +17,6 @@ import java.util.Locale;
 
 /**
  * EmotionSummaryAdapter displays emotion count statistics in a ListView.
- *
  * Design Rationale:
  * - Custom adapter for displaying summary statistics
  * - Shows count, percentage, and visual progress bar for each emotion
@@ -25,10 +24,8 @@ import java.util.Locale;
  * - ViewHolder pattern for performance
  * - Displays only emotions that have been logged (count > 0)
  *
- * Outstanding Issues: None
- *
- * @author Your Name
- * @version 1.0
+ * @author Muhammad Bin Tariq
+ * @version 0.2
  */
 public class EmotionSummaryAdapter extends ArrayAdapter<SummaryActivity.EmotionSummaryItem> {
 
@@ -36,13 +33,6 @@ public class EmotionSummaryAdapter extends ArrayAdapter<SummaryActivity.EmotionS
     private List<SummaryActivity.EmotionSummaryItem> items;
     private int totalCount;
 
-    /**
-     * Constructor for EmotionSummaryAdapter
-     *
-     * @param context The current context
-     * @param items List of summary items to display
-     * @param totalCount Total count of all emotions for percentage calculation
-     */
     public EmotionSummaryAdapter(Context context, List<SummaryActivity.EmotionSummaryItem> items, int totalCount) {
         super(context, 0, items);
         this.context = context;

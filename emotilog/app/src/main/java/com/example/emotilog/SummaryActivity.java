@@ -20,19 +20,16 @@ import java.util.Map;
 
 /**
  * SummaryActivity displays emotion count summaries for a selected date.
- *
  * Design Rationale:
  * - Provides statistical overview of emotion logs by frequency
- * - Allows date selection via DatePicker for viewing historical data
+ * - Allows date selection via DatePicker for viewing historical data (optional feature. Was implemented in v0.1 with persistent storage)
  * - Defaults to current date for immediate relevance
  * - Uses ListView to display emotion counts in descending order
  * - Shows total count for the selected date
  * - Separate activity maintains single responsibility principle
  *
- * Outstanding Issues: None
- *
- * @author Your Name
- * @version 1.0
+ * @author Muhammad Bin Tariq
+ * @version 0.2
  */
 public class SummaryActivity extends AppCompatActivity {
 
